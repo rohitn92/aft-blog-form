@@ -1,0 +1,170 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.8/css/intlTelInput.css">
+<style>
+.iti-flag {background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.8/img/flags.png");}
+
+.error { 
+    outline:none;
+    border-color:#FD7E7E;
+    box-shadow:0 0 10px red !important;
+}
+
+input{
+    width: 100%;
+    padding: 12px 15px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+ #full_name_principal{
+    width: 78%;
+    padding: 12px 15px;
+    margin:  8px 0 0 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#email_offer_principal{
+    width: 78%;
+    padding: 12px 15px;
+    margin:  8px 0 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#freetrials {
+    width: 78%;
+    background-color: #34495E;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#freetrials:hover {
+    background-color: #2C3E50;
+}
+
+#free-trial-img{
+width: 78%;
+}
+
+</style>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.8/js/intlTelInput.js"></script>
+
+<img id="free-trial-img" src="https://s3-eu-west-1.amazonaws.com/shawaftassets/resources/blog/lead-form-files/free-trial-aft-form.png">
+
+<form name="freetrial-form" method="post" action="http://www.academyft.com/registration/getfreetrial.php" id="form_principal">
+                                                <input name="full_name" id="full_name_principal" type="text" class="sign-up-inp" placeholder="Enter Your Full Name" required>
+                                                <input name="email_offer" id="email_offer_principal" type="email" class="sign-up-inp" placeholder="Enter Your Email Address">
+                                                <input type="tel" class="sign-up-inp telnum" name="tel_number" id="phone_offer_principal" placeholder="Enter Your Phone Number" value=""/ required>
+                                               
+                                               <script>
+
+                                                    $("#phone_offer_principal").intlTelInput({
+    initialCountry: "auto",
+    nationalMode:false,
+  geoIpLookup: function(callback) {
+    $.get('http://ipinfo.io', function() {}, "jsonp").always(function(resp) {
+      var countryCode = (resp && resp.country) ? resp.country : "";
+      callback(countryCode);
+    });
+  },
+  utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.2.0/js/utils.js"
+});
+
+var phoneInput = $('#phone_offer_principal');
+
+function phoneCheck() {
+ if ($.trim(phoneInput.val())) {
+    if (phoneInput.intlTelInput("isValidNumber")) {
+      
+      $('#freetrials').prop('disabled', false);
+    } else {
+      phoneInput.addClass("error");
+      $('#freetrials').prop('disabled', true);
+}
+}
+}
+
+phoneInput.blur(function() {
+  reset();
+  if ($.trim(phoneInput.val())) {
+    if (phoneInput.intlTelInput("isValidNumber")) {
+      
+      $('#freetrials').prop('disabled', false);
+    } else {
+      phoneInput.addClass("error");
+      $('#freetrials').prop('disabled', true);
+    }
+  }
+});
+
+var reset = function() {
+  phoneInput.removeClass("error");
+ $('#freetrials').prop('disabled', true);
+phoneCheck();
+};
+
+
+phoneInput.on("keyup change", reset);
+
+var patt1 = /.@[a-zA-Z]+/i;
+var emailfield = $("#email_offer_principal");
+$('#freetrials').prop('disabled', true);
+var checkemail = function() {
+if (emailfield.val().indexOf('@') === -1 || emailfield.val().match(patt1)== null)
+{  emailfield.addClass("error");
+$('#freetrials').prop('disabled', true);
+}
+else {
+emailfield.removeClass("error");
+$('#freetrials').prop('disabled', false);
+}
+};
+emailfield.on("keyup change", checkemail);
+                                                </script>
+                                                <p class="sent_show1" id='confirm_sent_principal'></p>
+                                             
+                                                <input type="submit" name="freetrial" id="freetrials" disabled class="btn-sign-up" value="SIGN UP NOW" return submitPrincipal();/>
+                                            </form>
+
+<script type="text/javascript">
+                                    function submitPrincipal(){
+                                        var fullName = $('#full_name_principal').val();
+                                        var email = $('#email_offer_principal').val();
+                                        var phone = $('#phone_offer_principal').val();
+                                        var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                                        var errors = '';    
+                                        
+                                        if(fullName.trim() == ''){
+                                            errors += "Full Name is mandatory<br />";    
+                                        }
+                                        if(phone.trim() == ''){
+                                            errors += "Phone is mandatory<br />";
+                                        }
+                                        if(email.trim() == ''){
+                                            errors += "Email is mandatory<br />";
+                                        } else if(!regex.test(email)){
+                                            errors += "Incorrect Email<br />";    
+                                        }
+                                        
+                                        if(errors != ''){
+                                            $('#confirm_sent_principal').html(errors);
+                                            return false;
+                                        }
+                                        return true;
+                                    }
+                                </script>
